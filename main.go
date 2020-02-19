@@ -13,7 +13,7 @@ import (
 	"github.com/go-chi/chi/middleware"
 	"github.com/go-chi/cors"
 )
-
+	
 type response struct {
 	ID uint `json:"id,omitempty"`
 }
@@ -43,6 +43,8 @@ func main() {
 	r := chi.NewRouter()
 	r.Use(middleware.Recoverer)
 	r.Use(middleware.Logger)
+
+	
 
 	// CORS
 	cware := cors.New(cors.Options{

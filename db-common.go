@@ -14,7 +14,7 @@ type omit *struct{}
 type Context struct {
 	*gorm.DB
 }
-
+// CommonModel gives us a structure description
 type CommonModel struct {
 	ID uint `gorm:"primary_key" json:"id"`
 }

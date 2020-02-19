@@ -28,7 +28,7 @@ func (db *Context) GetStatus(id string) *Status {
 	return &file
 }
 
-// GetAllStatuss returns all snippets
+// GetAllStatuses returns all snippets
 func (db *Context) GetAllStatuses() []Status {
 	files := []Status{}
 	db.Find(&files)

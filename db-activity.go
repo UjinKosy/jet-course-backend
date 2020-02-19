@@ -31,15 +31,15 @@ func (cf *Activity) FieldMap(req *http.Request) binding.FieldMap {
 		},
 	}
 }
-
-func (d *Activity) MarshalJSON() ([]byte, error) {
+// MarshalJSON is coming as native module
+func (cf *Activity) MarshalJSON() ([]byte, error) {
 	type Alias Activity
 	return json.Marshal(&struct {
 		*Alias
 		DueDate string
 	}{
-		Alias:   (*Alias)(d),
-		DueDate: d.DueDate.Format("02-01-2006 15:04"),
+		Alias:   (*Alias)(cf),
+		DueDate: cf.DueDate.Format("02-01-2006 15:04"),
 	})
 }
 

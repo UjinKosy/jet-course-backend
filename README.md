@@ -27,3 +27,10 @@ DO NOT use it as an example of the good backend
 - add POST /api/v1/countries/{id}
 - update PUT /api/v1/countries/{id}
 - delete DELETE /api/v1/countries/{id}
+
+
+### Files: 
+- get list of uploaded files in browser GET /api/v1/uploadFiles/files/
+- get file from uploaded files GET /api/v1/uploadFiles/files/{fileName}
+- upload file POST api/v1/uploadFiles/
+

@@ -16,7 +16,7 @@ type AppConfig struct {
 	Debug bool
 }
 
-// Default contains global app's configuration
+//DefaultConfig contains global app's configuration
 var DefaultConfig AppConfig
 
 //Load method loads and parses config file

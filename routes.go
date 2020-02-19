@@ -1,13 +1,26 @@
 package main
 
 import (
+	"fmt"
+	"io/ioutil"
 	"net/http"
+
+	"os"
+	"path/filepath"
+	"strings"
 
 	"github.com/mholt/binding"
 
 	"github.com/go-chi/chi"
 	"github.com/unrolled/render"
 )
+
+type uploaderResponse struct {
+	ID uint `json:"id,omitempty"`
+	Status string
+	Name string 
+	SName string
+}
 
 func apiRoutes(r *chi.Mux, dbc *Context, render *render.Render, cfg *AppConfig) {
 
@@ -153,4 +166,84 @@ func apiRoutes(r *chi.Mux, dbc *Context, render *render.Render, cfg *AppConfig) 
 		render.JSON(w, 200, response{})
 	})
 
+	// upload
+	uploadAPI := apiRoot + "uploadFiles"
+
+	r.Route(uploadAPI, func(root chi.Router) {
+		root.Get("/", func(w http.ResponseWriter, r *http.Request) {
+			w.Write([]byte("hi"))
+		})
+
+		root.Post(uploadAPI+"/", func(w http.ResponseWriter, r *http.Request) {
+			// Parse our multipart form, 10 << 20 specifies a maximum
+			// upload of 10 MB files.
+			r.ParseMultipartForm(10 << 20)
+			// FormFile returns the first file for the given key `myFile`
+			// it also returns the FileHeader so we can get the Filename,
+			// the Header and the size of the file
+			file, handler, err := r.FormFile("upload")
+			if err != nil {
+				fmt.Println("Error Retrieving the File")
+				fmt.Println(err)
+				render.JSON(w, 200, uploaderResponse{Status: "error"})
+				return
+			}
+			defer file.Close()
+			fmt.Printf("Uploaded File: %+v\n", handler.Filename)
+			fmt.Printf("File Size: %+v\n", handler.Size)
+			fmt.Printf("MIME Header: %+v\n", handler.Header)
+	
+			// Create a temporary file within our temp-images directory that follows
+			// a particular naming pattern
+			fileNewName := "upload-"+handler.Filename+".xxx"
+			tempFile, err := ioutil.TempFile("temp-files", fileNewName)
+			if err != nil {
+				fmt.Println(err)
+				render.JSON(w, 200, uploaderResponse{Status: "error"})
+			}
+			fmt.Printf("New name of the file is %+v\n", tempFile.Name())
+			defer tempFile.Close()
+	
+			// read all of the contents of our uploaded file into a
+			// byte array
+			fileBytes, err := ioutil.ReadAll(file)
+			if err != nil {
+				fmt.Println(err)
+				render.JSON(w, 200, uploaderResponse{Status: "error"})
+			}
+			// write this byte array to our temporary file
+			tempFile.Write(fileBytes)
+	
+			render.JSON(w, 200, uploaderResponse{
+				Status: "server",
+				Name: handler.Filename,
+				SName: tempFile.Name(),
+			})
+		})
+
+		workDir, _ := os.Getwd()
+		filesDir := filepath.Join(workDir, "temp-files")
+		FileServer(root, uploadAPI, "/files", http.Dir(filesDir))
+	})
+
+}
+
+// FileServer conveniently sets up a http.FileServer handler to serve
+// static files from a http.FileSystem.
+func FileServer(r chi.Router, basePath string, path string, root http.FileSystem) {
+	if strings.ContainsAny(path, "{}*") {
+		panic("FileServer does not permit URL parameters.")
+	}
+
+	fs := http.StripPrefix(basePath+path, http.FileServer(root))
+
+	if path != "/" && path[len(path)-1] != '/' {
+		r.Get(path, http.RedirectHandler(path+"/", 301).ServeHTTP)
+		path += "/"
+	}
+	path += "*"
+
+	r.Get(path, http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		fs.ServeHTTP(w, r)
+	}))
 }

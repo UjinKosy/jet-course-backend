@@ -51,16 +51,17 @@ func (cf *Contact) FieldMap(req *http.Request) binding.FieldMap {
 	}
 }
 
-func (d *Contact) MarshalJSON() ([]byte, error) {
+// MarshalJSON describe built-ins
+func (cf *Contact) MarshalJSON() ([]byte, error) {
 	type Alias Contact
 	return json.Marshal(&struct {
 		*Alias
 		Birthday  string
 		StartDate string
 	}{
-		Alias:     (*Alias)(d),
-		StartDate: d.StartDate.Format("02-01-2006"),
-		Birthday:  d.Birthday.Format("02-01-2006"),
+		Alias:     (*Alias)(cf),
+		StartDate: cf.StartDate.Format("02-01-2006"),
+		Birthday:  cf.Birthday.Format("02-01-2006"),
 	})
 }
 
