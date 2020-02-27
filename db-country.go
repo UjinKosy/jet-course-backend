@@ -28,9 +28,9 @@ func (db *Context) GetCountry(id string) *Country {
 	return &file
 }
 
-// GetAllCountrys returns all snippets
-func (db *Context) GetAllCountrys() []Country {
-	files := []Country{}
+// GetAllCountries returns all snippets
+func (db *Context) GetAllCountries() []Country {
+	var files []Country
 	db.Find(&files)
 	return files
 }

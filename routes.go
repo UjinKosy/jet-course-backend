@@ -57,7 +57,7 @@ func apiRoutes(r *chi.Mux, dbc *Context, render *render.Render, cfg *AppConfig) 
 	// contacts
 	countriesAPI := apiRoot + "countries"
 	r.Get(countriesAPI+"/", func(w http.ResponseWriter, r *http.Request) {
-		render.JSON(w, 200, dbc.GetAllCountrys())
+		render.JSON(w, 200, dbc.GetAllCountries())
 	})
 	r.Get(countriesAPI+"/{key}", func(w http.ResponseWriter, r *http.Request) {
 		render.JSON(w, 200, dbc.GetCountry(chi.URLParam(r, "key")))
@@ -164,6 +164,12 @@ func apiRoutes(r *chi.Mux, dbc *Context, render *render.Render, cfg *AppConfig) 
 	r.Delete(activityTypesAPI+"/{id}", func(w http.ResponseWriter, r *http.Request) {
 		dbc.DeleteActivityType(chi.URLParam(r, "id"))
 		render.JSON(w, 200, response{})
+	})
+
+	filesAPI := apiRoot + "files"
+	r.Get(filesAPI+"/{id}", func(w http.ResponseWriter, r *http.Request){
+		id := chi.URLParam(r, "id")
+		render.JSON(w, 200, dbc.getFile(id))
 	})
 
 	// upload

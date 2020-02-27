@@ -2,3 +2,4 @@ jet-course-backend
 temp-files
 .idea
 .vscode
+*.exe

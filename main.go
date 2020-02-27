@@ -36,8 +36,8 @@ func main() {
 	dbc := NewDB(cfg)
 	defer dbc.Close()
 
-	// render subsystem
-	render := render.New()
+	// renderInstance subsystem
+	renderInstance := render.New()
 
 	// configure server
 	r := chi.NewRouter()
@@ -54,7 +54,7 @@ func main() {
 	})
 	r.Use(cware.Handler)
 
-	apiRoutes(r, dbc, render, cfg)
+	apiRoutes(r, dbc, renderInstance, cfg)
 
 	// start server
 	log.Printf("Hearing at %s%s", cfg.Server.Port, cfg.Server.Path)
