@@ -39,7 +39,7 @@ func (cf *Activity) MarshalJSON() ([]byte, error) {
 		DueDate string
 	}{
 		Alias:   (*Alias)(cf),
-		DueDate: cf.DueDate.Format("02-01-2006 15:04"),
+		DueDate: cf.DueDate.Format("2006-01-02 15:04"),
 	})
 }
 
@@ -73,7 +73,7 @@ func (db *Context) UpdateActivity(id string, update *Activity) *Activity {
 			"details"	: update.Details,
 			"TypeId"	: update.TypeID,
 			"state"		: update.State,
-			"ContactId": update.ContactID,
+			"ContactId" : update.ContactID,
 			"DueDate"	: update.DueDate,
 		})
 	}

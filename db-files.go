@@ -1,6 +1,7 @@
 package main
 
 import (
+	"encoding/json"
 	"github.com/mholt/binding"
 	"net/http"
 	"time"
@@ -24,6 +25,18 @@ func (f* File) FieldMap(req *http.Request) binding.FieldMap {
 		},
 		&f.Path: "Path",
 	}
+}
+
+// MarshalJSON is coming as native module
+func (f *File) MarshalJSON() ([]byte, error) {
+	type Alias File
+	return json.Marshal(&struct {
+		*Alias
+		UploadDate string
+	}{
+		Alias:   (*Alias)(f),
+		UploadDate: f.UploadDate.Format("2006-01-02 15:04"),
+	})
 }
 
 func (db *Context) getFile(id string) *File {

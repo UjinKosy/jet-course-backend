@@ -60,8 +60,8 @@ func (cf *Contact) MarshalJSON() ([]byte, error) {
 		StartDate string
 	}{
 		Alias:     (*Alias)(cf),
-		StartDate: cf.StartDate.Format("02-01-2006"),
-		Birthday:  cf.Birthday.Format("02-01-2006"),
+		StartDate: cf.StartDate.Format("2006-01-02"),
+		Birthday:  cf.Birthday.Format("2006-01-02"),
 	})
 }
 

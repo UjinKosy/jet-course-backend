@@ -38,5 +38,6 @@ func NewDB(config *AppConfig) *Context {
 	db.AutoMigrate(&Contact{})
 	db.AutoMigrate(&Activity{})
 	db.AutoMigrate(&ActivityType{})
+	db.AutoMigrate(&File{})
 	return &Context{DB: db}
 }
